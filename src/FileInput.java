@@ -33,17 +33,28 @@ public class FileInput extends Thread {
             while (!parent.isEndOfStream()) {
                 fillBuffer();
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                inputStreamReader.close();
+                inputStream.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
     }
 
     // This function fills the stack buffer allocated to this thread with read
     // characters.
-    public void fillBuffer() throws IOException {
-        int character;
-        if (buffer.isEmpty()) {
+    public void fillBuffer() throws IOException, InterruptedException {
+        synchronized (buffer) {
+            int character;
+            while (!buffer.isEmpty()) {
+                buffer.wait();
+            }
             while (!buffer.isFull() && !parent.isEndOfStream()) {
                 character = inputStreamReader.read();
                 if (character != -1) {
@@ -52,8 +63,10 @@ public class FileInput extends Thread {
                     setEndOfStream(true);
                 }
             }
-            // System.out.println("Buffer size: " + buffer.size());
+            // We notify the other thread, that the buffer is full.
+            buffer.notifyAll();
         }
+
     }
 
     // This function informs the parent and the other class, that the input file has

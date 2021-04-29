@@ -22,19 +22,28 @@ public class FileOutput extends Thread {
     // filled by the reader thread, this thread writes the buffers contents to file
     // specified as the output file
     public void run() {
-        while (!parent.isEndOfStream()) {
-            writeBuffer();
+        try {
+            while (!parent.isEndOfStream()) {
+                writeBuffer();
+            }
+            // To catch the final time, when buffer may be partially filled.
+        } catch (Exception e) {
+            // TODO: handle exception
         }
-        // To catch the final time, when buffer may be partially filled.
-        if (parent.isEndOfStream()) {
-            writeBuffer();
-        }
+
     }
 
-    // This function writes the contents of the stack buffer into the selected output file.
-    public void writeBuffer() {
-        if (buffer.isFull() || parent.isEndOfStream()) {
-            int[] array = new int[buffer.getStackCapacity()];
+    // This function writes the contents of the stack buffer into the selected
+    // output file.
+    public void writeBuffer() throws InterruptedException {
+        synchronized (buffer) {
+
+            while (!buffer.isFull() && !parent.isEndOfStream()) {
+                //System.out.println("Waiting for full buffer.");
+                buffer.wait();
+            }
+
+            int[] array = new int[buffer.size()];
 
             // We reverse the order of the elements from the stack as they are in reverse
             // order.
@@ -48,11 +57,11 @@ public class FileOutput extends Thread {
                 // append instead.
                 outputStream = new FileOutputStream(new File(path), true);
                 outputStreamWriter = new OutputStreamWriter(outputStream);
-
                 for (int c : array) {
-                    System.out.print((char) c);
+                    //System.out.print((char) c);
                     outputStreamWriter.write(c);
                 }
+
             } catch (IOException e) {
                 System.err.println("Error writing charaters to file.");
                 e.printStackTrace();
@@ -66,7 +75,10 @@ public class FileOutput extends Thread {
                 }
 
             }
+            //We notify the other thread, that the buffer is empty.
+            buffer.notifyAll();
 
         }
+
     }
 }
