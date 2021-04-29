@@ -1,3 +1,4 @@
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,6 +19,8 @@ public class FileInput extends Thread {
         } catch (FileNotFoundException e) {
             System.err.println("The file to be copied cannot be found.");
             e.printStackTrace();
+            setEndOfStream(true);
+            return;
         }
         inputStreamReader = new InputStreamReader(inputStream);
         this.buffer = stack;
@@ -33,14 +36,17 @@ public class FileInput extends Thread {
             while (!parent.isEndOfStream()) {
                 fillBuffer();
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            System.err.println("FileInput thread interrupted.");
             e.printStackTrace();
         } finally {
             try {
                 inputStreamReader.close();
                 inputStream.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                System.err.println("Error closing FileInput Stream resources.");
                 e.printStackTrace();
             }
         }

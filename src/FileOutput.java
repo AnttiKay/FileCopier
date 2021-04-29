@@ -27,8 +27,9 @@ public class FileOutput extends Thread {
                 writeBuffer();
             }
             // To catch the final time, when buffer may be partially filled.
-        } catch (Exception e) {
-            // TODO: handle exception
+        } catch (InterruptedException e) {
+            System.err.println("FileOutput thread interrupted.");
+            e.printStackTrace();
         }
 
     }
@@ -63,14 +64,14 @@ public class FileOutput extends Thread {
                 }
 
             } catch (IOException e) {
-                System.err.println("Error writing charaters to file.");
+                System.err.println("FileOutput error writing charaters to file.");
                 e.printStackTrace();
             } finally {
                 try {
                     outputStreamWriter.close();
                     outputStream.close();
                 } catch (IOException e) {
-                    System.err.println("Error closing stream resources.");
+                    System.err.println("Error closing FileOutput stream resources.");
                     e.printStackTrace();
                 }
 

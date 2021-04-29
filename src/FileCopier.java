@@ -1,5 +1,4 @@
 import java.io.File;
-import java.nio.file.FileAlreadyExistsException;
 
 public class FileCopier {
     private SynchronizedStack<Integer> stack;
@@ -23,11 +22,11 @@ public class FileCopier {
         this.outputFilePath = outputFilePath;
     }
 
-    public void copyFile() throws FileAlreadyExistsException {
+    public void copyFile() {
         File outputFile = new File(outputFilePath);
 
         while (outputFile.isFile() || outputFilePath.equals("")) {
-            outputFile = new File(createOutputFileName(outputFile.getName()));  
+            outputFile = new File(createOutputFileName(outputFile.getName()));
             outputFilePath = outputFile.getName();
         }
 
@@ -66,10 +65,14 @@ public class FileCopier {
         this.endOfStream = endOfStream;
     }
 
-    public static String createOutputFileName(String inputFilePath) {
-        File inputFile = new File(inputFilePath);
+    // This function is used to generate the output file name in case it hasn't been
+    // given or the output file already exists.
+    public static String createOutputFileName(String FilePath) {
+        File inputFile = new File(FilePath);
+        // We get the folder of the file is in.
+        String inputFileFolder = inputFile.getAbsoluteFile().getParent();
         String[] nameArray = inputFile.getName().split("\\.");
-        return nameArray[0] + " copy." + nameArray[nameArray.length - 1];
+        return inputFileFolder + "\\" + nameArray[0] + " copy." + nameArray[nameArray.length - 1];
     }
 
 }
