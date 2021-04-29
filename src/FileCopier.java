@@ -22,7 +22,9 @@ public class FileCopier {
         this.outputFilePath = outputFilePath;
     }
 
-    public void copyFile() {
+    // This method is synchronized, so that other threads have to wait until the
+    // copying is done.
+    public synchronized void copyFile() {
         File outputFile = new File(outputFilePath);
 
         while (outputFile.isFile() || outputFilePath.equals("")) {
@@ -37,6 +39,14 @@ public class FileCopier {
 
         input.start();
         output.start();
+
+        //We join the current thread to the FileOutput thread, so that threads aren't interrupted by new function call of copyfile.
+        try {
+            output.join();
+        } catch (InterruptedException e) {
+            System.err.println("FileOutput thread interrupted.");
+            e.printStackTrace();
+        }
     }
 
     public String getOutputFilePath() {
