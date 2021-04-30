@@ -1,6 +1,6 @@
 ## FileCopier
 
-Implemented in Java. Allows copying of files. Uses a thread to read file to copy and a thread to create the copy.
+Implemented in Java. Allows copying of files. Uses a thread to read file to copy and a thread to create the copy. FileCopier is threadsafe.
 
 ### Features
 Needs path to file to be copied and the path to where the copied file is saved.
