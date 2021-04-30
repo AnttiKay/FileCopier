@@ -22,6 +22,7 @@ public class FileInput extends Thread {
             setEndOfStream(true);
             throw new IllegalArgumentException();
         } else {
+            
             try {
                 inputStream = new FileInputStream(new File(path));
             } catch (FileNotFoundException e) {

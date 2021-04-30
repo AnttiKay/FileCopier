@@ -31,8 +31,8 @@ public class FileCopier {
     }
 
     // This method is synchronized, so that other threads have to wait until the
-    // copying is done.
-    public synchronized void copyFile() {
+    // copying is done. Returns true if copying is successfull false otherwise.
+    public synchronized boolean copyFile() {
         File outputFile = new File(outputFilePath);
 
         while (outputFile.isFile() || outputFilePath.equals("")) {
@@ -54,7 +54,9 @@ public class FileCopier {
         } catch (InterruptedException e) {
             System.err.println("FileOutput thread interrupted.");
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     public String getOutputFilePath() {
