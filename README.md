@@ -2,7 +2,7 @@
 
 Implemented in Java. Allows copying of files. Uses a thread to read file to copy and a thread to create the copy.
 
-#Features
+# Features
 Needs path to file to be copied and the path to where the copied file is saved.
 
 FileCopier filecopier = new Filecopier("Path to file to be copied", "Path to copied file to be saved");
