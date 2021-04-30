@@ -18,4 +18,5 @@ filecopier.copyFile();
 It is also possible to change the internal buffer size.
 
 FileCopier filecopier = new FileCopier(String inputFilePath, String outputFilePath, int bufferSize);
+
 fileCopier.copyFile();
