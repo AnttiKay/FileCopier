@@ -1,9 +1,13 @@
+package app.threads;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import app.FileCopier;
+import app.SynchronizedStack;
 
 public class FileInput extends Thread {
     private FileInputStream inputStream;
@@ -14,17 +18,24 @@ public class FileInput extends Thread {
     // Parameters are: the stack buffer allocated to this thread, path to the input
     // file, parent of this thread.
     public FileInput(SynchronizedStack<Integer> stack, String path, FileCopier parent) {
-        try {
-            inputStream = new FileInputStream(new File(path));
-        } catch (FileNotFoundException e) {
-            System.err.println("The file to be copied cannot be found.");
-            e.printStackTrace();
+        if (stack == null || parent == null || path.equals("")) {
             setEndOfStream(true);
-            return;
+            throw new IllegalArgumentException();
+        } else {
+            try {
+                inputStream = new FileInputStream(new File(path));
+            } catch (FileNotFoundException e) {
+                System.err.println("The file to be copied cannot be found.");
+                e.printStackTrace();
+                setEndOfStream(true);
+                return;
+            }
+            inputStreamReader = new InputStreamReader(inputStream);
+
+            this.buffer = stack;
+            this.parent = parent;
         }
-        inputStreamReader = new InputStreamReader(inputStream);
-        this.buffer = stack;
-        this.parent = parent;
+
     }
 
     // Thread runs until the end of the selected file. At the end passes

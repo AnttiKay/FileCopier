@@ -1,4 +1,8 @@
+package app;
 import java.io.File;
+
+import app.threads.FileInput;
+import app.threads.FileOutput;
 
 public class FileCopier {
     private SynchronizedStack<Integer> stack;
@@ -7,6 +11,10 @@ public class FileCopier {
     private FileInput input;
     private FileOutput output;
     private boolean endOfStream = false;
+
+    public FileCopier(){
+        this("", "", 50);
+    }
 
     public FileCopier(String inputFilePath) {
         this(inputFilePath, createOutputFileName(inputFilePath), 50);

@@ -1,3 +1,4 @@
+package app;
 import java.util.ArrayDeque;
 
 public class SynchronizedStack<T> {
@@ -32,7 +33,7 @@ public class SynchronizedStack<T> {
     public synchronized boolean isEmpty() {
         return this.dequeStore.isEmpty();
     }
-
+    
     public int getStackCapacity() {
         return stackCapacity;
     }
@@ -41,5 +42,8 @@ public class SynchronizedStack<T> {
     // from the stack and empty it.
     public boolean isFull() {
         return getStackCapacity() == size();
+    }
+    public void clear(){
+        this.dequeStore.clear();
     }
 }
