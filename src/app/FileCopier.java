@@ -10,7 +10,6 @@ public class FileCopier {
     private String outputFilePath;
     private FileInput input;
     private FileOutput output;
-    private boolean endOfStream = false;
 
     public FileCopier(){
         this("", "", 50);
@@ -40,10 +39,8 @@ public class FileCopier {
             outputFilePath = outputFile.getName();
         }
 
-        this.endOfStream = false;
-
-        input = new FileInput(stack, inputFilePath, this);
-        output = new FileOutput(stack, outputFilePath, this);
+        input = new FileInput(stack, inputFilePath);
+        output = new FileOutput(stack, outputFilePath);
 
         input.start();
         output.start();
@@ -73,16 +70,6 @@ public class FileCopier {
 
     public void setInputFilePath(String inputFilePath) {
         this.inputFilePath = inputFilePath;
-    }
-
-    public boolean isEndOfStream() {
-        return endOfStream;
-    }
-
-    // This function is used from the reader thread, to inform that the file has
-    // been completely read.
-    public void setEndOfStream(boolean endOfStream) {
-        this.endOfStream = endOfStream;
     }
 
     // This function is used to generate the output file name in case it hasn't been
